@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Note AppHay - IDE Context Builder</title>
+    <meta
+      name="description"
+      content="Tao ghi chu project de nhieu IDE va AI coding agent doc hieu context tu cac doan chat khac nhau."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Note AppHay</p>
+          <h1>Bien chat roi rac thanh context chung cho IDE</h1>
+          <p class="lead">
+            Paste chat tu Cursor, Copilot, Claude Code, OpenCode hoac IDE khac. Tool nay tao file
+            context ngan gon de agent tiep theo hieu project, quy tac, viec dang lam va viec can lam.
+          </p>
+        </div>
+        <div class="hero-card">
+          <span class="status-dot"></span>
+          <strong>Output phu hop</strong>
+          <p>AGENTS.md, CONTEXT.md, handoff note, README section, JSON archive.</p>
+        </div>
+      </section>
+
+      <section class="grid">
+        <form class="panel form" id="note-form">
+          <div class="field two">
+            <label>
+              Ten project
+              <input id="project-name" type="text" placeholder="VD: note.apphay.io.vn" />
+            </label>
+            <label>
+              Nguon chat
+              <input id="chat-source" type="text" placeholder="VD: Cursor, OpenCode, Copilot" />
+            </label>
+          </div>
+
+          <label class="field">
+            Muc tieu hien tai
+            <textarea id="goal" rows="3" placeholder="Project dang can dat dieu gi?"></textarea>
+          </label>
+
+          <label class="field">
+            Chat / ghi chu tu IDE khac
+            <textarea
+              id="raw-chat"
+              rows="10"
+              placeholder="Paste chat, bug report, plan, yeu cau, quy tac code..."
+            ></textarea>
+          </label>
+
+          <div class="field two">
+            <label>
+              Tech stack
+              <input id="stack" type="text" placeholder="VD: React, Laravel, Cloudflare Workers" />
+            </label>
+            <label>
+              Trang thai
+              <input id="status" type="text" placeholder="VD: dang build MVP, dang debug auth" />
+            </label>
+          </div>
+
+          <label class="field">
+            Quy tac quan trong cho IDE/agent
+            <textarea id="rules" rows="4" placeholder="VD: khong sua file deploy, dung TypeScript strict..."></textarea>
+          </label>
+
+          <label class="field">
+            Viec tiep theo
+            <textarea id="next-steps" rows="4" placeholder="Moi dong la mot viec can lam tiep."></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit">Tao context</button>
+            <button type="button" class="ghost" id="clear-form">Xoa form</button>
+          </div>
+        </form>
+
+        <aside class="panel output-panel">
+          <div class="output-head">
+            <div>
+              <p class="eyebrow">Markdown</p>
+              <h2>File cho IDE doc</h2>
+            </div>
+            <div class="actions compact">
+              <button type="button" id="copy-output">Copy</button>
+              <button type="button" class="ghost" id="download-md">Tai .md</button>
+              <button type="button" class="ghost" id="download-json">Tai .json</button>
+            </div>
+          </div>
+          <pre id="output" aria-live="polite"></pre>
+        </aside>
+      </section>
+
+      <section class="panel guide">
+        <h2>Cach dung voi nhieu IDE</h2>
+        <div class="guide-grid">
+          <article>
+            <h3>1. Paste chat</h3>
+            <p>Lay cac doan trao doi quan trong tu IDE cu, issue, terminal log hoac bug report.</p>
+          </article>
+          <article>
+            <h3>2. Tao context</h3>
+            <p>Tool gom lai thanh markdown co muc tieu, quy tac, quyet dinh, viec tiep theo.</p>
+          </article>
+          <article>
+            <h3>3. Luu vao repo</h3>
+            <p>Dat output vao <code>AGENTS.md</code>, <code>CONTEXT.md</code> hoac <code>docs/handoff.md</code>.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
