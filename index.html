@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Note AppHay - IDE Context Builder</title>
+    <title>Note AppHay - IDE Session Store</title>
     <meta
       name="description"
-      content="Tạo ghi chú project để nhiều IDE và AI coding agent đọc hiểu context từ các đoạn chat khác nhau."
+      content="Nơi lưu note, session chat và context project từ nhiều IDE, sẵn sàng đồng bộ qua MCP hoặc backend."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -15,83 +15,139 @@
       <section class="hero">
         <div>
           <p class="eyebrow">Note AppHay</p>
-          <h1>Biến chat rời rạc thành context chung cho IDE</h1>
+          <h1>Kho nhớ chung cho project, IDE và session chat</h1>
           <p class="lead">
-            Paste chat từ Cursor, Copilot, Claude Code, OpenCode hoặc IDE khác. Tool này tạo file
-            context ngắn gọn để agent tiếp theo hiểu project, quy tắc, việc đang làm và việc cần làm.
+            Lưu note, data session chat của từng IDE theo từng project. Xuất Markdown cho agent đọc,
+            xuất JSON để đồng bộ sau qua MCP, API hoặc server riêng.
           </p>
         </div>
         <div class="hero-card">
           <span class="status-dot"></span>
-          <strong>Output phù hợp</strong>
-          <p>AGENTS.md, CONTEXT.md, handoff note, README section, JSON archive.</p>
+          <strong>Static trước, MCP sau</strong>
+          <p>Dữ liệu hiện lưu trong trình duyệt bằng <code>localStorage</code>.</p>
         </div>
       </section>
 
-      <section class="grid">
-        <form class="panel form" id="note-form">
-          <div class="field two">
-            <label>
-              Tên project
-              <input id="project-name" type="text" placeholder="VD: note.apphay.io.vn" />
-            </label>
-            <label>
-              Nguồn chat
-              <input id="chat-source" type="text" placeholder="VD: Cursor, OpenCode, Copilot" />
+      <section class="app-layout">
+        <aside class="panel sidebar">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Projects</p>
+              <h2>Project</h2>
+            </div>
+            <button type="button" id="add-project">Thêm</button>
+          </div>
+          <div class="list" id="project-list" aria-label="Danh sách project"></div>
+
+          <div class="io-box">
+            <button type="button" class="ghost" id="export-store">Export JSON</button>
+            <label class="import-button">
+              Import JSON
+              <input id="import-store" type="file" accept="application/json" />
             </label>
           </div>
+        </aside>
 
-          <label class="field">
-            Mục tiêu hiện tại
-            <textarea id="goal" rows="3" placeholder="Project đang cần đạt điều gì?"></textarea>
-          </label>
+        <section class="content-stack">
+          <form class="panel form" id="project-form">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Project Memory</p>
+                <h2>Thông tin project</h2>
+              </div>
+              <button type="button" class="danger" id="delete-project">Xóa project</button>
+            </div>
 
-          <label class="field">
-            Chat / ghi chú từ IDE khác
-            <textarea
-              id="raw-chat"
-              rows="10"
-              placeholder="Paste chat, bug report, plan, yêu cầu, quy tắc code..."
-            ></textarea>
-          </label>
+            <div class="field two">
+              <label>
+                Tên project
+                <input id="project-name" type="text" placeholder="VD: note.apphay.io.vn" />
+              </label>
+              <label>
+                Đường dẫn repo
+                <input id="repo-path" type="text" placeholder="VD: O:\www\wwwroot\note.apphay.io.vn" />
+              </label>
+            </div>
 
-          <div class="field two">
-            <label>
-              Tech stack
-              <input id="stack" type="text" placeholder="VD: React, Laravel, Cloudflare Workers" />
+            <div class="field two">
+              <label>
+                Git remote
+                <input id="git-remote" type="url" placeholder="https://github.com/user/repo.git" />
+              </label>
+              <label>
+                Tech stack
+                <input id="stack" type="text" placeholder="VD: React, Laravel, Cloudflare Workers" />
+              </label>
+            </div>
+
+            <label class="field">
+              Mục tiêu hiện tại
+              <textarea id="goal" rows="3" placeholder="Project đang cần đạt điều gì?"></textarea>
             </label>
-            <label>
-              Trạng thái
-              <input id="status" type="text" placeholder="VD: đang build MVP, đang debug auth" />
+
+            <label class="field">
+              Quy tắc cho IDE/agent
+              <textarea id="rules" rows="4" placeholder="Mỗi dòng là một quy tắc quan trọng."></textarea>
             </label>
-          </div>
 
-          <label class="field">
-            Quy tắc quan trọng cho IDE/agent
-            <textarea id="rules" rows="4" placeholder="VD: không sửa file deploy, dùng TypeScript strict..."></textarea>
-          </label>
+            <label class="field">
+              Việc tiếp theo
+              <textarea id="next-steps" rows="4" placeholder="Mỗi dòng là một việc cần làm tiếp."></textarea>
+            </label>
+          </form>
 
-          <label class="field">
-            Việc tiếp theo
-            <textarea id="next-steps" rows="4" placeholder="Mỗi dòng là một việc cần làm tiếp."></textarea>
-          </label>
+          <section class="panel sessions-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">IDE Sessions</p>
+                <h2>Session chat</h2>
+              </div>
+              <button type="button" id="add-session">Thêm session</button>
+            </div>
 
-          <div class="actions">
-            <button type="submit">Tạo context</button>
-            <button type="button" class="ghost" id="clear-form">Xóa form</button>
-          </div>
-        </form>
+            <div class="session-grid">
+              <div class="list" id="session-list" aria-label="Danh sách session"></div>
+
+              <form class="session-editor" id="session-form">
+                <div class="field two">
+                  <label>
+                    IDE / agent
+                    <input id="session-ide" type="text" placeholder="Cursor, OpenCode, Claude Code..." />
+                  </label>
+                  <label>
+                    Tiêu đề session
+                    <input id="session-title" type="text" placeholder="VD: Debug auth middleware" />
+                  </label>
+                </div>
+
+                <label class="field">
+                  Tóm tắt session
+                  <textarea id="session-summary" rows="3" placeholder="Session này đã quyết gì, làm gì, còn vướng gì?"></textarea>
+                </label>
+
+                <label class="field">
+                  Chat / transcript / log
+                  <textarea id="session-chat" rows="9" placeholder="Paste chat từ IDE hoặc MCP tool output..."></textarea>
+                </label>
+
+                <div class="actions">
+                  <button type="button" id="save-session">Lưu session</button>
+                  <button type="button" class="danger" id="delete-session">Xóa session</button>
+                </div>
+              </form>
+            </div>
+          </section>
+        </section>
 
         <aside class="panel output-panel">
           <div class="output-head">
             <div>
-              <p class="eyebrow">Markdown</p>
+              <p class="eyebrow">Agent Context</p>
               <h2>File cho IDE đọc</h2>
             </div>
             <div class="actions compact">
               <button type="button" id="copy-output">Copy</button>
               <button type="button" class="ghost" id="download-md">Tải .md</button>
-              <button type="button" class="ghost" id="download-json">Tải .json</button>
             </div>
           </div>
           <pre id="output" aria-live="polite"></pre>
@@ -99,19 +155,19 @@
       </section>
 
       <section class="panel guide">
-        <h2>Cách dùng với nhiều IDE</h2>
+        <h2>Luồng dùng với MCP</h2>
         <div class="guide-grid">
           <article>
-            <h3>1. Paste chat</h3>
-            <p>Lấy các đoạn trao đổi quan trọng từ IDE cũ, issue, terminal log hoặc bug report.</p>
+            <h3>1. IDE gửi session</h3>
+            <p>MCP server nhận chat, project path, IDE name, summary rồi ghi vào store.</p>
           </article>
           <article>
-            <h3>2. Tạo context</h3>
-            <p>Tool gom lại thành Markdown có mục tiêu, quy tắc, quyết định, việc tiếp theo.</p>
+            <h3>2. Web xem và sửa</h3>
+            <p>Web hiển thị project memory, session chat, note và context Markdown.</p>
           </article>
           <article>
-            <h3>3. Lưu vào repo</h3>
-            <p>Đặt output vào <code>AGENTS.md</code>, <code>CONTEXT.md</code> hoặc <code>docs/handoff.md</code>.</p>
+            <h3>3. Agent đọc lại</h3>
+            <p>IDE mới lấy context theo project để tiếp tục đúng trạng thái.</p>
           </article>
         </div>
       </section>
