@@ -35,33 +35,33 @@ function buildMarkdown() {
   const data = getData();
   const today = new Date().toISOString().slice(0, 10);
 
-  return `# Project Context: ${data.projectName || "Unnamed Project"}
+  return `# Project Context: ${data.projectName || "Chưa đặt tên project"}
 
-Last updated: ${today}
-Source: ${data.chatSource || "Manual notes from IDE chats"}
+Cập nhật lần cuối: ${today}
+Nguồn: ${data.chatSource || "Ghi chú thủ công từ chat IDE"}
 
-## Current Goal
-${data.goal || "Chua co muc tieu ro rang. Hay doc chat goc va hoi lai neu can."}
+## Mục tiêu hiện tại
+${data.goal || "Chưa có mục tiêu rõ ràng. Hãy đọc chat gốc và hỏi lại nếu cần."}
 
-## Project Status
-${data.status || "Chua co trang thai ro rang."}
+## Trạng thái project
+${data.status || "Chưa có trạng thái rõ ràng."}
 
 ## Tech Stack
-${data.stack || "Chua khai bao."}
+${data.stack || "Chưa khai báo."}
 
-## Rules For IDE / AI Agents
-${listBlock(data.rules, "Giu thay doi nho, dung muc tieu, khong sua file ngoai pham vi neu chua can.")}
+## Quy tắc cho IDE / AI Agents
+${listBlock(data.rules, "Giữ thay đổi nhỏ, đúng mục tiêu, không sửa file ngoài phạm vi nếu chưa cần.")}
 
-## Next Steps
-${listBlock(data.nextSteps, "Doc context nay, kiem tra codebase, xac nhan viec can lam tiep.")}
+## Việc tiếp theo
+${listBlock(data.nextSteps, "Đọc context này, kiểm tra codebase, xác nhận việc cần làm tiếp.")}
 
-## Raw Chat Notes
+## Ghi chú chat gốc
 \`\`\`text
-${codeBlock(data.rawChat, "Chua paste chat.")}
+${codeBlock(data.rawChat, "Chưa paste chat.")}
 \`\`\`
 
 ## Handoff Prompt
-Use this file as shared project memory. Before editing, inspect relevant files, preserve user changes, and continue from Next Steps. If Raw Chat conflicts with current code, trust current code and ask one focused question only when blocked.
+Dùng file này như bộ nhớ chung của project. Trước khi sửa code, hãy đọc file liên quan, giữ nguyên thay đổi của user, rồi tiếp tục từ mục Việc tiếp theo. Nếu ghi chú chat gốc mâu thuẫn với code hiện tại, ưu tiên code hiện tại và chỉ hỏi một câu rõ ràng khi bị chặn.
 `;
 }
 
